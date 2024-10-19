@@ -39,20 +39,22 @@ describe('doStuffByTimeout', () => {
     doStuffByTimeout(callback, timeout);
 
     expect(setTimeout).toHaveBeenCalledTimes(1);
+    // cal setTimout 1 time
     expect(setTimeout).toHaveBeenLastCalledWith(callback, timeout);
+    // cal setTimout with right arguments
   });
-
-
 
   test('should call callback only after timeout', () => {
     const callback = jest.fn();
     const timeout = 1000;
     doStuffByTimeout(callback, timeout);
     jest.advanceTimersByTime(timeout - 1);
+    //move time too 999 (1000-1) to check callback is not called while setTimout is not finished
 
     expect(callback).not.toBeCalled();
 
     jest.advanceTimersByTime(1);
+    // move time (999+1) to check callbacj is called
     expect(callback).toBeCalled();
   });
 });
@@ -70,10 +72,13 @@ describe('doStuffByInterval', () => {
     const callback = jest.fn();
     const interval = 2000;
     const setInterval = jest.spyOn(global, 'setInterval');
+    // create spy to check if setInterval will be called
 
     doStuffByInterval(callback, interval);
 
     expect(setInterval).toHaveBeenCalledTimes(1);
+    // надо ли
+
     expect(setInterval).toHaveBeenLastCalledWith(callback, interval);
   });
 
@@ -84,12 +89,16 @@ describe('doStuffByInterval', () => {
     doStuffByInterval(callback, interval);
 
     expect(callback).not.toBeCalled();
+    // check if callback is not calles before finiish interval
 
     jest.advanceTimersByTime(interval);
+    // move interval to 2000 s
     expect(callback).toHaveBeenCalledTimes(1);
+    // check if callback is called 1 tome
 
     jest.advanceTimersByTime(interval);
     expect(callback).toHaveBeenCalledTimes(2);
+    // e.t.c
 
     jest.advanceTimersByTime(interval);
     expect(callback).toHaveBeenCalledTimes(3);
@@ -109,6 +118,7 @@ describe('readFileAsynchronously', () => {
   test('should return null if file does not exist', async () => {
     const pathToFile = 'test.txt';
     mockExistsSync.mockReturnValue(false);
+    // if file doesn't exist
 
     const result = await readFileAsynchronously(pathToFile);
 
